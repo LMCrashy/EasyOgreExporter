@@ -16,6 +16,7 @@
 #include "iparamb2.h"
 
 extern ClassDesc2* GetEasyOgreExporterDesc(void);
+extern ClassDesc2* GetEasyOgreMeshExporterDesc(void);
 //extern ClassDesc2* GetEasyOgreMaxScriptInterfaceClassDesc(void);
 extern HINSTANCE hInstance;
 
@@ -49,8 +50,8 @@ __declspec(dllexport) ClassDesc* LibClassDesc(int i)
 {
 	switch(i) 
 	{
-		case 0: return GetEasyOgreExporterDesc();
-		//case 1 : return GetEasyOgreMaxScriptInterfaceClassDesc();
+		case 0 : return GetEasyOgreExporterDesc();
+		case 1 : return GetEasyOgreMeshExporterDesc();
 		default: return 0;
 	}
 }

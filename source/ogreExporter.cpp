@@ -550,6 +550,7 @@ int	OgreSceneExporter::DoExport(const TCHAR* name, ExpInterface* pExpInterface, 
   
   params.exportAll = (options & SCENE_EXPORT_SELECTED) ? false : true;
 
+  params.exportScene = mExportScene;
   params.suppressPrompts = suppressPrompts;
 
   // Using only a scene filename, construct the other paths
@@ -565,7 +566,13 @@ int	OgreSceneExporter::DoExport(const TCHAR* name, ExpInterface* pExpInterface, 
     scenePath[i]=tolower(scenePath[i]);
   }
 
-  size_t sceneIndex = scenePath.rfind(".scene", scenePath.length() -1);
+  size_t sceneIndex;
+
+  if (params.exportScene)
+      sceneIndex = scenePath.rfind(".scene", scenePath.length() - 1);
+  else
+      sceneIndex = scenePath.rfind(".mesh", scenePath.length() - 1);
+
   size_t folderIndexForward = scenePath.rfind("/", scenePath.length() -1);
   size_t folderIndexBackward = scenePath.rfind("\\", scenePath.length() -1);
   size_t folderIndex;
@@ -582,10 +589,17 @@ int	OgreSceneExporter::DoExport(const TCHAR* name, ExpInterface* pExpInterface, 
     folderIndex = folderIndexBackward > folderIndexForward ? folderIndexBackward : folderIndexForward;
   }
 
-  if(sceneIndex == std::string::npos || folderIndex == std::string::npos)
+  if (sceneIndex == std::string::npos || folderIndex == std::string::npos)
   {
-    MessageBox(GetCOREInterface()->GetMAXHWnd(), _T("Invalid scene filename."), _T("Error"), MB_OK);
-    return false;
+      if (params.exportScene)
+      {
+          MessageBox(GetCOREInterface()->GetMAXHWnd(), _T("Invalid scene filename."), _T("Error"), MB_OK);
+      }
+      else
+      {
+          MessageBox(GetCOREInterface()->GetMAXHWnd(), _T("Invalid mesh filename."), _T("Error"), MB_OK);
+      }
+      return false;
   }
   
   std::string outDir = scenePath.substr(0, folderIndex);
@@ -774,6 +788,40 @@ void OgreSceneExporter::loadExportConf(std::string path, ParamList &param)
     if(child && child->GetText())
       param.maxMipmaps = atoi(child->GetText());
   }
+}
+
+OgreMeshExporter::OgreMeshExporter()
+{
+    mExportScene = false;
+}
+
+OgreMeshExporter::~OgreMeshExporter()
+{
+}
+
+int OgreMeshExporter::ExtCount(void)
+{
+    return 1;
+}
+
+const TCHAR* OgreMeshExporter::Ext(int n)
+{
+    return _T("mesh");
+}
+
+const TCHAR* OgreMeshExporter::LongDesc(void)
+{
+    return _T("Easy Ogre Exporter(mesh)");
+}
+
+const TCHAR* OgreMeshExporter::ShortDesc(void)
+{
+    return _T("Ogre Mesh");
+}
+
+BOOL OgreMeshExporter::SupportsOptions(int ext, DWORD options)
+{
+    return (options & SCENE_EXPORT_SELECTED) ? true : false;
 }
 
 // Dummy function for progress bar.
@@ -1073,7 +1121,7 @@ bool OgreExporter::exportScene()
 
   // Passing in true causing crash on IGameNode->GetNodeParent.  
   // Test for selection in Translate node.
-  pIGame->InitialiseIGame(false);
+  pIGame->InitialiseIGame(m_params.exportAll ? false : true);
   pIGame->SetStaticFrame(0);
 
   std::string sTitle = "Easy Ogre Exporter: " + m_params.sceneFilename;
@@ -1461,3 +1509,17 @@ class EasyOgreExporterClassDesc:public ClassDesc2
 static EasyOgreExporterClassDesc EasyOgreExporterDesc;
 ClassDesc2* GetEasyOgreExporterDesc() { return &EasyOgreExporterDesc; }
 
+class EasyOgreMeshExporterClassDesc :public ClassDesc2
+{
+public:
+    int 			IsPublic() { return TRUE; }
+    void *			Create(BOOL loading = FALSE) { return new EasyOgreExporter::OgreMeshExporter(); }
+    const TCHAR *	ClassName() { return _T("OgreMeshExporter"); }
+    SClass_ID		SuperClassID() { return SCENE_EXPORT_CLASS_ID; }
+    Class_ID		ClassID() { return Class_ID(0x6d8a7dad, 0x14d51c15); }
+    const TCHAR* 	Category() { return _T("OGRE"); }
+    const TCHAR*	InternalName() { return _T("OgreMeshExporter"); }
+    HINSTANCE		HInstance() { return hInstance; }
+};
+static EasyOgreMeshExporterClassDesc EasyOgreMeshExporterDesc;
+ClassDesc2* GetEasyOgreMeshExporterDesc() { return &EasyOgreMeshExporterDesc; }

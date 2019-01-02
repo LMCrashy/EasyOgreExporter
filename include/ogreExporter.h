@@ -48,7 +48,29 @@ public:
 	void ShowAbout(HWND hWnd);
 	BOOL SupportsOptions(int ext, DWORD options);
 	int	DoExport(const TCHAR* name, ExpInterface* pExpInterface, Interface* pInterface, BOOL suppressPrompts = FALSE, DWORD options = 0);
-  void loadExportConf(std::string path, ParamList &param);
+    void loadExportConf(std::string path, ParamList &param);
+
+    protected:
+
+    BOOL mExportScene;
+};
+
+class OgreMeshExporter : public OgreSceneExporter
+{
+public:
+
+    // public methods
+    OgreMeshExporter();
+    virtual ~OgreMeshExporter();
+
+    int ExtCount(void);
+    const TCHAR* Ext(int n);
+    const TCHAR* LongDesc(void);
+    const TCHAR* ShortDesc(void);
+
+    BOOL SupportsOptions(int ext, DWORD options);
+    //int	DoExport(const TCHAR* name, ExpInterface* pExpInterface, Interface* pInterface, BOOL suppressPrompts = FALSE, DWORD options = 0);
+    //void loadExportConf(std::string path, ParamList &param);
 };
 
 class OgreExporter 
