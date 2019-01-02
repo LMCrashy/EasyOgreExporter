@@ -142,6 +142,7 @@ namespace EasyOgreExporter
         CheckDlgButton(hWnd, IDC_CONVDDS, exp->convertToDDS);
         CheckDlgButton(hWnd, IDC_RESAMPLE_ANIMS, exp->resampleAnims);
         CheckDlgButton(hWnd, IDC_LOGS, exp->enableLogs);
+        CheckDlgButton(hWnd, IDC_EXPORT_MATERIAL_SCRIPTS, exp->exportMaterial);
     		
 #ifdef UNICODE
         //fill Shader mode combo box
@@ -367,6 +368,7 @@ namespace EasyOgreExporter
               exp->convertToDDS = IsDlgButtonChecked(hWnd, IDC_CONVDDS) ? true : false;
               exp->resampleAnims = IsDlgButtonChecked(hWnd, IDC_RESAMPLE_ANIMS) ? true : false;
               exp->enableLogs = IsDlgButtonChecked(hWnd, IDC_LOGS) ? true : false;
+              exp->exportMaterial = IsDlgButtonChecked(hWnd, IDC_EXPORT_MATERIAL_SCRIPTS) ? true : false;
 
               int shaderIdx = SendDlgItemMessage(hWnd, IDC_SHADERMODE, CB_GETCURSEL, 0, 0);
               if (shaderIdx != CB_ERR)

@@ -100,6 +100,8 @@ BEGIN
     CONTROL         "",IDC_RESAMPLE_SPIN,"SpinnerControl",0x0,198,342,7,10
     GROUPBOX        "Misc",IDC_STATIC,13,359,201,27
     CONTROL         "Enable logs",IDC_LOGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,370,132,10
+    CONTROL         "Export material files",IDC_EXPORT_MATERIAL_SCRIPTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,131,283,79,10
 END
 
 
@@ -121,6 +123,17 @@ BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_PANEL AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 #endif    // French (France) resources
 /////////////////////////////////////////////////////////////////////////////
