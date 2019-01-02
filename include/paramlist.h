@@ -59,7 +59,7 @@ namespace EasyOgreExporter
 		bool exportMesh, exportMaterial, exportCameras, exportLights, lightingOff, exportAll,
 			exportVertNorm, exportVertCol, exportSkeleton, exportSkelAnims, exportVertAnims, exportPoses, 
 			useSharedGeom, copyTextures, tangentsSplitMirrored, tangentsSplitRotated, tangentsUseParity, 
-			buildTangents, buildEdges, resampleAnims, yUpAxis, exportScene, generateLOD, convertToDDS, enableLogs;
+			buildTangents, buildEdges, resampleAnims, yUpAxis, exportScene, generateLOD, convertToDDS, enableLogs,suppressPrompts;
 
 		float lum;	// Length Unit Multiplier
 
@@ -125,6 +125,8 @@ namespace EasyOgreExporter
 			exportScene = true;
       enableLogs = true;
 
+      suppressPrompts = false;
+
       meshVersion = TOGRE_LASTEST;
 		}
 
@@ -172,6 +174,8 @@ namespace EasyOgreExporter
 			exportScene = source.exportScene;
       meshVersion = source.meshVersion;
       enableLogs = source.enableLogs;
+
+      suppressPrompts = source.suppressPrompts;
 
 			return *this;
 		}

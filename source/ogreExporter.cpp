@@ -550,6 +550,8 @@ int	OgreSceneExporter::DoExport(const TCHAR* name, ExpInterface* pExpInterface, 
   
   params.exportAll = (options & SCENE_EXPORT_SELECTED) ? false : true;
 
+  params.suppressPrompts = suppressPrompts;
+
   // Using only a scene filename, construct the other paths
 #ifdef UNICODE
   std::wstring scenePath_w = name;
@@ -621,10 +623,13 @@ int	OgreSceneExporter::DoExport(const TCHAR* name, ExpInterface* pExpInterface, 
 
   ExData::maxInterface.m_params = params;
 
-	if (!DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_PANEL), pInterface->GetMAXHWnd(), IGameExporterOptionsDlgProc, (LPARAM)&(ExData::maxInterface.m_params)))
+  if (!params.suppressPrompts)
   {
-		return 1;
-	}
+      if (!DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_PANEL), pInterface->GetMAXHWnd(), IGameExporterOptionsDlgProc, (LPARAM)&(ExData::maxInterface.m_params)))
+      {
+          return 1;
+      }
+  }
 
   return ExData::maxInterface.exportScene();
 }
@@ -1164,7 +1169,10 @@ bool OgreExporter::exportScene()
   GetCOREInterface()->ProgressEnd();
   lFoundBones.clear();
 
-  MessageBox(GetCOREInterface()->GetMAXHWnd(), _T("Export done successfully."), _T("Info"), MB_OK);
+  if (!m_params.suppressPrompts)
+  {
+      MessageBox(GetCOREInterface()->GetMAXHWnd(), _T("Export done successfully."), _T("Info"), MB_OK);
+  }
   return true;
 }
 
