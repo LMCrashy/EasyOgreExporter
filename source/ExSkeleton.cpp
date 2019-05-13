@@ -609,15 +609,15 @@ namespace EasyOgreExporter
 			return false;
 		}
 
-    //add time steps
-    std::vector<int> times;
-    times.clear();
+        //add time steps
+        std::vector<int> times;
+        times.clear();
 		for (int t = start; t < stop; t += rate)
 			times.push_back(t);
 
-    //force the last key
+        //force the last key
 		times.push_back(stop);
-    times.erase(std::unique(times.begin(), times.end()), times.end());
+        times.erase(std::unique(times.begin(), times.end()), times.end());
 
 		// get animation length
 		int length = 0;
@@ -633,7 +633,7 @@ namespace EasyOgreExporter
 		ExAnimation a;
 		a.m_name = clipName.c_str();
 		a.m_tracks.clear();
-    a.m_length = (static_cast<float>(length) / static_cast<float>(rate)) / GetFrameRate();
+        a.m_length = (static_cast<float>(length) / static_cast<float>(rate)) / GetFrameRate();
 		m_animations.push_back(a);
 		int animIdx = m_animations.size() - 1;
 
@@ -653,14 +653,14 @@ namespace EasyOgreExporter
 		{
 			//int closestFrame = (int)(.5f + times[i]* GetFrameRate());
 
-      //load a keyframe for every joint at current time
+        //load a keyframe for every joint at current time
 			for (size_t j = 0; j < m_joints.size(); j++)
 			{
 				skeletonKeyframe key = loadKeyframe(m_joints[j], times[i]);
         
-        //EasyOgreExporterLog("add key frame: %f\n", key.time);
-        //set key time
-        key.time = (static_cast<float>((times[i] - times[0])) / static_cast<float>(rate)) / GetFrameRate();
+                //EasyOgreExporterLog("add key frame: %f\n", key.time);
+                //set key time
+                key.time = (static_cast<float>((times[i] - times[0])) / static_cast<float>(rate)) / GetFrameRate();
 
 				//add keyframe to joint track
 				animTracks[j].addSkeletonKeyframe(key);
@@ -691,14 +691,18 @@ namespace EasyOgreExporter
 		// add created tracks to current clip
 		for (size_t i = 0; i < animTracks.size(); i++)
 		{
-      animTracks[i].optimize();
-			m_animations[animIdx].addTrack(animTracks[i]);
+            animTracks[i].optimize();
+            //don't export empty animations
+            if (animTracks[i].m_skeletonKeyframes.size() > 2)
+            {
+                m_animations[animIdx].addTrack(animTracks[i]);
+            }
 		}
 
 		// display info
 		EasyOgreExporterLog("length: %f\n", m_animations[animIdx].m_length);
-    if(animTracks.size() > 0)
-		  EasyOgreExporterLog("num keyframes: %d\n", animTracks[0].m_skeletonKeyframes.size());
+        if(animTracks.size() > 0)
+		    EasyOgreExporterLog("num keyframes: %d\n", animTracks[0].m_skeletonKeyframes.size());
 		
 		// clip successfully loaded
 		return true;
@@ -871,18 +875,19 @@ namespace EasyOgreExporter
     // parse the list reversed for good anims order
 		for (size_t i = 0; i < m_animations.size(); i++)
 		{
+            if (m_animations[i].m_tracks.size() == 0) continue;
 			// Create a new animation
 			Ogre::Animation* pAnimation = pSkeleton->createAnimation(m_animations[i].m_name.c_str(), m_animations[i].m_length);
 
-      // Create tracks for current animation
+            // Create tracks for current animation
 			for (size_t j = 0; j < m_animations[i].m_tracks.size(); j++)
 			{
 				ExTrack* t = &m_animations[i].m_tracks[j];
 				
-        // Create a new track
-        Ogre::OldBone* oBone = pSkeleton->getBone(t->m_bone.c_str());
-        if (!oBone)
-          continue;
+                // Create a new track
+                Ogre::OldBone* oBone = pSkeleton->getBone(t->m_bone.c_str());
+                if (!oBone)
+                  continue;
 
 				Ogre::OldNodeAnimationTrack* pTrack = pAnimation->createOldNodeTrack(j,	oBone);
 
@@ -898,7 +903,7 @@ namespace EasyOgreExporter
 					pKeyframe->setTranslate(Ogre::Vector3(keyframe->trans.x, keyframe->trans.y ,keyframe->trans.z));
 
 					// Set rotation
-          pKeyframe->setRotation(Ogre::Quaternion(keyframe->rot.w, keyframe->rot.x, keyframe->rot.y, keyframe->rot.z));
+                    pKeyframe->setRotation(Ogre::Quaternion(keyframe->rot.w, keyframe->rot.x, keyframe->rot.y, keyframe->rot.z));
 
 					// Set scale
 					pKeyframe->setScale(Ogre::Vector3(keyframe->scale.x, keyframe->scale.y, keyframe->scale.z));
