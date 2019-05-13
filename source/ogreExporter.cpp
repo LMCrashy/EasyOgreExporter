@@ -561,10 +561,10 @@ int	OgreSceneExporter::DoExport(const TCHAR* name, ExpInterface* pExpInterface, 
 #else
   std::string scenePath = name;
 #endif
-  for (int i=0; i<scenePath.length(); ++i)
+  /*for (int i=0; i<scenePath.length(); ++i)
   {
     scenePath[i]=tolower(scenePath[i]);
-  }
+  }*/
 
   size_t sceneIndex;
 
@@ -787,6 +787,11 @@ void OgreSceneExporter::loadExportConf(std::string path, ParamList &param)
     child = rootElem->FirstChildElement("IDC_NUMMIPS");
     if(child && child->GetText())
       param.maxMipmaps = atoi(child->GetText());
+
+
+    child = rootElem->FirstChildElement("IDC_EXPORT_MATERIAL");
+    if (child)
+        param.exportMaterial = (child->GetText() && (atoi(child->GetText()) == 1)) ? true : false;
   }
 }
 
@@ -960,6 +965,11 @@ void OgreExporter::saveExportConf(std::string path)
   oMipsVal << m_params.maxMipmaps;
   child = new TiXmlElement("IDC_NUMMIPS");
   childText = new TiXmlText(oMipsVal.str().c_str());
+  child->LinkEndChild(childText);
+  contProperties->LinkEndChild(child);
+
+  child = new TiXmlElement("IDC_EXPORT_MATERIAL");
+  childText = new TiXmlText(m_params.exportMaterial ? "1" : "0");
   child->LinkEndChild(childText);
   contProperties->LinkEndChild(child);
 

@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Fichier Include généré de Microsoft Visual C++.
-// Utilisé par EasyOgreExporter.rc
+// Microsoft Visual C++ generated include file.
+// Used by EasyOgreExporter.rc
 //
 #define IDD_PANEL                       101
 #define IDC_OGREVERSION                 1001
